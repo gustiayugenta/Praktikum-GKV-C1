@@ -1,0 +1,193 @@
+// Soal
+// 1. Jelaskan Bagaimana cara kerja Kode Lengan di bawah!
+
+// Lengan Bergerak
+
+#include <GL/glut.h>
+static int shoulder = 0, elbow = 0;
+void init(void) {
+	glClearColor (0.0, 0.0, 0.0, 0.0);
+	glShadeModel (GL_FLAT);
+}
+void display(void) {
+	glClear (GL_COLOR_BUFFER_BIT);
+	glPushMatrix();
+	glTranslatef (-1.0, 0.0, 0.0);
+	glRotatef ((GLfloat) shoulder, 0.0, 0.0, 1.0);
+	glTranslatef (1.0, 0.0, 0.0); glPushMatrix();
+	glScalef (2.0, 0.4, 1.0);
+	glutWireCube (1.0); glPopMatrix();
+	glTranslatef (1.0, 0.0, 0.0);
+	glRotatef ((GLfloat) elbow, 0.0, 0.0, 1.0);
+	glTranslatef (1.0, 0.0, 0.0); glPushMatrix();
+	glScalef (2.0, 0.4, 1.0);
+	glutWireCube (1.0);
+	glPopMatrix(); glPopMatrix();
+	glutSwapBuffers();
+}
+void reshape (int w, int h) {
+	glViewport (0, 0, (GLsizei) w, (GLsizei) h);
+	glMatrixMode (GL_PROJECTION); glLoadIdentity();
+	gluPerspective(65.0, (GLfloat) w/(GLfloat) h, 1.0, 20.0);
+	glMatrixMode(GL_MODELVIEW); glLoadIdentity();
+	glTranslatef (0.0, 0.0, -5.0);
+}
+
+void keyboard(unsigned char key, int x, int y) {
+switch (key) {
+	case 's': shoulder = (shoulder + 5) % 360;
+	glutPostRedisplay(); break;
+	case 'S': shoulder = (shoulder - 5) % 360;
+	glutPostRedisplay(); break;
+	case 'e': elbow = (elbow + 5) % 360;
+	glutPostRedisplay(); break;
+	case 'E': elbow = (elbow - 5) % 360;
+	glutPostRedisplay(); break;
+	case 27: exit(0); break;
+	default: break;
+}
+}
+int main(int argc, char** argv) {
+	glutInit(&argc, argv);
+		glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
+	glutInitWindowSize (700, 600);
+	glutInitWindowPosition (100, 100);
+	glutCreateWindow (argv[0]); init();
+		glutDisplayFunc(display);
+	glutReshapeFunc(reshape);
+	glutKeyboardFunc(keyboard);
+	glutMainLoop(); return 0;
+}
+
+// Jawaban
+
+// 1. Kode di atas merupakan implementasi sederhana dari sebuah lengan bergerak menggunakan OpenGL. 
+      Lengan ini terdiri dari dua bagian utama, yaitu bahu (shoulder) dan siku (elbow), yang dapat 
+      berputar dengan menggunakan input dari keyboard. Berikut adalah penjelasan cara kerja kode ini:
+
+//    a. Inisialisasi dan Setup OpenGL
+            - Fungsi init()
+              Fungsi ini mengatur warna latar belakang menjadi hitam (glClearColor(0.0, 0.0, 0.0, 0.0)) dan menetapkan  
+              mode shading sebagai GL_FLAT, yang berarti warna akan ditampilkan secara datar tanpa gradasi.
+            - Fungsi main()
+                 1. Inisialisasi GLUT:
+
+                        glutInit(&argc, argv);
+			glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB);
+                    
+                    - Menginisialisasi GLUT.
+                    - Menggunakan mode tampilan GLUT_DOUBLE untuk double buffering dan GLUT_RGB untuk warna.
+                 2. Membuat jendela OpenGL:
+
+
+			glutInitWindowSize(700, 600);
+			glutInitWindowPosition(100, 100);
+			glutCreateWindow(argv[0]);
+
+		    - Membuat jendela ukuran 700x600 piksel.
+		    - Menempatkan jendela di posisi (100,100) pada layar.
+		 3. Menghubungkan fungsi-fungsi callback:
+
+
+			glutDisplayFunc(display);
+			glutReshapeFunc(reshape);
+			glutKeyboardFunc(keyboard);
+
+		    - display() untuk menggambar lengan.
+		    - reshape() untuk menangani perubahan ukuran jendela.
+		    - keyboard() untuk menangani input keyboard.
+
+//    b. Menggambar Lengan(display() function)
+	   Fungsi display() bertanggung jawab untuk menggambar lengan menggunakan transformasi geometri seperti 
+           translasi (glTranslatef), rotasi (glRotatef), dan skala (glScalef).
+		1. Membersihkan layar:
+
+			glClear(GL_COLOR_BUFFER_BIT);
+
+		   - Membersihkan buffer warna sebelum menggambar objek.
+
+		2. Menggambar bahu (shoulder):
+
+		      - Translasi ke kiri sejauh -1.0 unit.
+		      - Rotasi bahu (shoulder) terhadap sumbu Z.
+		      - Translasi kembali ke kanan sejauh 1.0 unit.
+		      - Menggambar bagian pertama dari lengan dengan skala 2.0 x 0.4 x 1.0 menggunakan glutWireCube(1.0).
+
+			glPushMatrix();
+			glTranslatef (-1.0, 0.0, 0.0);
+			glRotatef ((GLfloat) shoulder, 0.0, 0.0, 1.0);
+			glTranslatef (1.0, 0.0, 0.0);
+
+			glPushMatrix();
+			glScalef (2.0, 0.4, 1.0);
+			glutWireCube (1.0);
+			glPopMatrix();
+
+		3. Menggambar siku (elbow):
+		      - Translasi ke kanan sejauh 1.0 unit.
+		      - Rotasi siku (elbow) terhadap sumbu Z.
+		      - Translasi kembali ke kanan sejauh 1.0 unit.
+		      - Menggambar bagian kedua dari lengan.
+
+			glTranslatef (1.0, 0.0, 0.0);
+			glRotatef ((GLfloat) elbow, 0.0, 0.0, 1.0);
+			glTranslatef (1.0, 0.0, 0.0);
+
+			glPushMatrix();
+			glScalef (2.0, 0.4, 1.0);
+			glutWireCube (1.0);
+			glPopMatrix();
+
+		4. Mengakhiri transformasi dengan glPopMatrix()
+
+			glPopMatrix();
+
+		5. Menampilkan gambar ke layar menggunakan glutSwapBuffers()
+
+			glutSwapBuffers();
+
+		     - Menggunakan double buffering untuk menghindari flickering.
+
+//    c. Transformasi Kamera(reshape() function)
+	 Fungsi ini memastikan objek tetap ditampilkan dengan benar saat ukuran jendela berubah.
+		1. Menyesuaikan viewport sesuai ukuran baru:
+
+			glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+
+		2. Mengatur proyeksi perspektif:
+
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			gluPerspective(65.0, (GLfloat) w/(GLfloat) h, 1.0, 20.0);
+
+		      - Menggunakan perspektif 3D dengan sudut pandang 65°, rasio aspek sesuai lebar/tinggi jendela, 
+ 			dan rentang kedalaman 1.0 hingga 20.0.
+
+		3. Mengatur transformasi tampilan awal:
+
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+			glTranslatef(0.0, 0.0, -5.0);
+
+		      - Memindahkan seluruh objek sejauh -5.0 unit ke dalam layar agar dapat terlihat dengan baik.
+
+//    d. Mengontrol Gerakan dengan Keyboard(keyboard() function)
+	 Kode ini memungkinkan pengguna mengontrol rotasi bahu dan siku menggunakan keyboard:
+
+			switch (key) {
+    				case 's': shoulder = (shoulder + 5) % 360;
+              				glutPostRedisplay(); break;
+    				case 'S': shoulder = (shoulder - 5) % 360;
+              				glutPostRedisplay(); break;
+    				case 'e': elbow = (elbow + 5) % 360;
+              				glutPostRedisplay(); break;
+    				case 'E': elbow = (elbow - 5) % 360;
+              				glutPostRedisplay(); break;
+    				case 27: exit(0); break;
+			}
+	   - Tombol 's' → Memutar bahu searah jarum jam (+5°).
+	   - Tombol 'S' → Memutar bahu berlawanan jarum jam (-5°).
+	   - Tombol 'e' → Memutar siku searah jarum jam (+5°).
+	   - Tombol 'E' → Memutar siku berlawanan jarum jam (-5°).
+	   - Tombol ESC → Keluar dari program.
+	   - Setiap kali tombol ditekan, glutPostRedisplay() dipanggil untuk menggambar ulang objek dengan posisi terbaru.
